@@ -1,7 +1,5 @@
 #!/bin/bash
 
-#echo "Enter domain for which generated ssl certificate: "
-#echo DOMAIN
 DOMAIN=`ls /etc/letsencrypt/live/`
 
 MDIR=/etc/mysql
