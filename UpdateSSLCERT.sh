@@ -7,16 +7,24 @@ DOMAIN=`ls /etc/letsencrypt/live/`
 MDIR=/etc/mysql
 LEDIR=/etc/letsencrypt/live/$DOMAIN
 
-PORT=`netstat -ntlp | grep -c :443`
-if [ "$PORT" -ne 0 ]; then
-echo
-echo PREVIOSLY WE NEED TO STOP WEBSERVER!!
-echo
-exit
-fi
+#PORT=`netstat -ntlp | grep -c :443`
+#if [ "$PORT" -ne 0 ]; then
+#echo
+#echo PREVIOSLY WE NEED TO STOP WEBSERVER!!
+#echo
+#exit
+#fi
+
+sed -i '/renew_before_expiry/d' /etc/letsencrypt/renewal/$DOMAIN.conf
+sed -i -e '1 s/^/renew_before_expiry = 90 days\n/;' /etc/letsencrypt/renewal/$DOMAIN.conf
 
 echo update ssl certificate
-certbot renew
+certbot renew --tls-sni-01-port 444
+
+
+#echo gen cert for nginx
+#cat $LEDIR/cert.pem $LEDIR/chain.pem > $LEDIR/wschain.pem
+#/etc/init.d/nginx reload
 
 echo
 echo convert privkey to rsa format and paste to mysql dir
